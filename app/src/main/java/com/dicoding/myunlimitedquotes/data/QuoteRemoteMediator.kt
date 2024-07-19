@@ -14,7 +14,7 @@ import com.dicoding.myunlimitedquotes.network.QuoteResponseItem
 @OptIn(ExperimentalPagingApi::class)
 class QuoteRemoteMediator(
     private val database: QuoteDatabase,
-    private val apiService: ApiService,
+    private val apiService: ApiService
 ) : RemoteMediator<Int, QuoteResponseItem>() {
 
     private companion object {
@@ -37,17 +37,15 @@ class QuoteRemoteMediator(
 
             LoadType.PREPEND -> {
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-                val prevKey = remoteKeys?.prevKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = remoteKeys != null
-                )
+                val prevKey = remoteKeys?.prevKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 prevKey
             }
 
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-                val nextKey = remoteKeys?.nextKey ?: return MediatorResult.Success(
-                    endOfPaginationReached = remoteKeys != null
-                )
+                val nextKey = remoteKeys?.nextKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 nextKey
             }
         }
@@ -67,7 +65,6 @@ class QuoteRemoteMediator(
                 val keys = responseData.map {
                     RemoteKeys(id = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
-
                 database.remoteKeysDao().insertAll(keys)
                 database.quoteDao().insertQuote(responseData)
             }
@@ -96,4 +93,5 @@ class QuoteRemoteMediator(
             }
         }
     }
+
 }
