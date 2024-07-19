@@ -35,6 +35,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        // freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
     }
 }
 
@@ -61,5 +62,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
     implementation(libs.logging.interceptor)
+
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.room.paging)
+
 }
