@@ -33,7 +33,7 @@ class MainViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    val mainDispatcherRules = MainDispatcherRule()
 
     @Mock
     private lateinit var quoteRepository: QuoteRepository
@@ -67,17 +67,14 @@ class MainViewModelTest {
         val expectedQuote = MutableLiveData<PagingData<QuoteResponseItem>>()
         expectedQuote.value = data
         Mockito.`when`(quoteRepository.getQuote()).thenReturn(expectedQuote)
-
         val mainViewModel = MainViewModel(quoteRepository)
         val actualQuote: PagingData<QuoteResponseItem> = mainViewModel.quote.getOrAwaitValue()
-
         val differ = AsyncPagingDataDiffer(
             diffCallback = QuoteListAdapter.DIFF_CALLBACK,
             updateCallback = noopListUpdateCallback,
             workerDispatcher = Dispatchers.Main,
         )
         differ.submitData(actualQuote)
-
         Assert.assertEquals(0, differ.snapshot().size)
     }
 }
@@ -99,19 +96,8 @@ class QuotePagingSource : PagingSource<Int, LiveData<List<QuoteResponseItem>>>()
 }
 
 val noopListUpdateCallback = object : ListUpdateCallback {
-    override fun onInserted(position: Int, count: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onRemoved(position: Int, count: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onMoved(fromPosition: Int, toPosition: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onChanged(position: Int, count: Int, payload: Any?) {
-        TODO("Not yet implemented")
-    }
+    override fun onInserted(position: Int, count: Int) {}
+    override fun onRemoved(position: Int, count: Int) {}
+    override fun onMoved(fromPosition: Int, toPosition: Int) {}
+    override fun onChanged(position: Int, count: Int, payload: Any?) {}
 }
